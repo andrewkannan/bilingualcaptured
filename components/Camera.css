@@ -32,13 +32,53 @@
   pointer-events: none;
 }
 
-/* TOP SPACER */
+/* Bright white overlay used for illuminating face */
+.software-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 200;
+  opacity: 1; /* full brightness */
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+}
+
+.countdown-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 120px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0px 4px 20px rgba(0,0,0,0.5);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.filter-toast {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #FFCC00;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 50;
+  backdrop-filter: blur(4px);
+}
+
 .top-spacer {
   height: max(40px, env(safe-area-inset-top));
   flex-shrink: 0;
 }
 
-/* VIEWFINDER */
 .viewfinder-wrapper {
   flex: 1;
   display: flex;
@@ -54,7 +94,7 @@
   height: 100%;
   position: relative;
   background: #111;
-  border-radius: 24px; /* Rounded corners as in the screenshot */
+  border-radius: 24px;
   overflow: hidden;
 }
 
@@ -62,13 +102,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: filter 0.3s ease; /* smooth filter transition */
 }
 
 .video-feed.mirrored {
   transform: scaleX(-1);
 }
 
-/* BOTTOM AREA */
 .bottom-area {
   display: flex;
   flex-direction: column;
@@ -77,12 +117,11 @@
   flex-shrink: 0;
 }
 
-/* ACTION ICONS ROW */
 .action-icons-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 24px 32px 32px;
+  padding: 24px 16px 32px;
 }
 
 .icon-btn {
@@ -91,16 +130,30 @@
   color: #fff;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
   transition: opacity 0.2s;
+  padding: 8px;
 }
 
 .icon-btn:active {
   opacity: 0.5;
 }
 
-/* SHUTTER & GALLERY ROW */
+.timer-btn .timer-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #FFCC00;
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
 .shutter-row {
   display: flex;
   align-items: center;
@@ -109,7 +162,7 @@
 }
 
 .shutter-spacer {
-  width: 60px; /* Balances the gallery thumbnail for perfect centering */
+  width: 60px;
 }
 
 .shutter-btn {
@@ -129,6 +182,12 @@
 
 .shutter-btn:active {
   transform: scale(0.92);
+}
+
+.shutter-btn:disabled {
+  opacity: 0.5;
+  transform: none;
+  cursor: not-allowed;
 }
 
 .shutter-inner {
@@ -152,7 +211,7 @@
 .thumbnail-btn {
   width: 52px;
   height: 52px;
-  border-radius: 12px; /* Slightly rounded square */
+  border-radius: 12px;
   background: #222;
   border: 2px solid #333;
   padding: 0;
