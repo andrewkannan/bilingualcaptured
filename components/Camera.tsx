@@ -56,24 +56,39 @@ export default function Camera({ onPhotoTaken }: { onPhotoTaken: () => void }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contentType: blob.type }),
         });
+        
+        if (!res.ok) {
+           const errText = await res.text();
+           throw new Error(`Upload API Error: ${errText}`);
+        }
+        
         const { presignedUrl, publicUrl } = await res.json();
         
-        await fetch(presignedUrl, {
+        const uploadRes = await fetch(presignedUrl, {
           method: 'PUT',
           body: blob,
           headers: { 'Content-Type': blob.type },
         });
+        
+        if (!uploadRes.ok) {
+           throw new Error(`S3 Upload failed with status ${uploadRes.status}. Check CORS.`);
+        }
 
-        await fetch('/api/photos', {
+        const dbRes = await fetch('/api/photos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: publicUrl }),
         });
         
+        if (!dbRes.ok) {
+           throw new Error(`DB Save failed with status ${dbRes.status}`);
+        }
+        
         onPhotoTaken();
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
-        setError('Failed to upload photo.');
+        setError(err.message || 'Failed to upload photo.');
+        setTimeout(() => setError(''), 5000);
       } finally {
         setIsUploading(false);
       }
