@@ -9,19 +9,21 @@ export default function Home() {
   const [view, setView] = useState<'camera' | 'gallery'>('camera');
 
   return (
-    <main className="container">
-      <header className="header animate-fade-in">
+    <div className="app-layout">
+      <header className="app-header">
         <h1>Guest Cam</h1>
         <p>Capture the moment.</p>
       </header>
 
-      {view === 'camera' ? (
-        <Camera onPhotoTaken={() => setView('gallery')} />
-      ) : (
-        <Gallery />
-      )}
+      <main className="app-main">
+        {view === 'camera' ? (
+          <Camera onPhotoTaken={() => setView('gallery')} />
+        ) : (
+          <Gallery />
+        )}
+      </main>
 
-      <nav className="bottom-nav glass animate-fade-in">
+      <nav className="app-nav glass">
         <button 
           className={`nav-btn ${view === 'camera' ? 'active' : ''}`}
           onClick={() => setView('camera')}
@@ -37,6 +39,6 @@ export default function Home() {
           <span>Album</span>
         </button>
       </nav>
-    </main>
+    </div>
   );
 }

@@ -2,8 +2,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  padding: 1rem 0;
-  padding-bottom: 100px;
+  padding: 0 1rem 1rem;
 }
 
 .photo-card {

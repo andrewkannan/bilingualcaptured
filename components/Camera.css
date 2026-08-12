@@ -2,19 +2,20 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  padding: 1rem 0;
+  padding: 0 1rem 1rem;
+  position: relative;
+  height: 100%;
 }
 
 .viewfinder {
+  flex: 1;
   width: 100%;
-  aspect-ratio: 3/4;
   overflow: hidden;
   position: relative;
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1rem;
+  background: #000;
 }
 
 .video-feed {
@@ -24,11 +25,11 @@
 }
 
 .controls {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: 1rem;
+  padding: 0.5rem 0;
 }
 
 .shutter-btn {
@@ -43,6 +44,7 @@
   cursor: pointer;
   transition: transform 0.1s ease;
   padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .shutter-btn:active {
@@ -82,10 +84,13 @@
 .error-toast {
   position: absolute;
   top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--accent-color);
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
   z-index: 10;
   font-size: 14px;
+  white-space: nowrap;
 }
