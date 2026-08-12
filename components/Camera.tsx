@@ -4,11 +4,11 @@ import { RefreshCcw, Zap, ZapOff, Timer, Copy, Camera as CameraIcon } from 'luci
 import './Camera.css';
 
 const FILTERS = [
-  { name: 'Provia (Std)', css: 'contrast(1.05) saturate(1.1)' },
-  { name: 'Velvia (Vivid)', css: 'contrast(1.2) saturate(1.5) brightness(1.05)' },
-  { name: 'Astia (Soft)', css: 'contrast(0.9) saturate(1.1) sepia(0.1)' },
-  { name: 'Classic Chrome', css: 'contrast(1.1) saturate(0.8) sepia(0.2) hue-rotate(-10deg)' },
-  { name: 'Acros (B&W)', css: 'grayscale(1) contrast(1.2)' }
+  { name: 'Provia (Std)', css: 'contrast(105%) saturate(110%)' },
+  { name: 'Velvia (Vivid)', css: 'contrast(120%) saturate(150%) brightness(105%)' },
+  { name: 'Astia (Soft)', css: 'contrast(90%) saturate(110%) sepia(10%)' },
+  { name: 'Classic Chrome', css: 'contrast(110%) saturate(80%) sepia(20%) hue-rotate(-10deg)' },
+  { name: 'Acros (B&W)', css: 'grayscale(100%) contrast(120%)' }
 ];
 
 const TIMERS = [0, 3, 10];
@@ -132,14 +132,26 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Apply Filter to Canvas!
-    ctx.filter = FILTERS[filterIndex].css;
-    
+    // iOS Safari WebKit Bug Fix:
+    // Drawing a <video> directly to a canvas with ctx.filter sometimes ignores the filter.
+    // Solution: Draw the raw video to a temporary offscreen canvas first.
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) return;
+
     if (facingMode === 'user') {
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
+      tempCtx.translate(tempCanvas.width, 0);
+      tempCtx.scale(-1, 1);
     }
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+
+    // Now apply the filter to our main canvas and draw the temp canvas onto it
+    if (filterIndex > 0) {
+      ctx.filter = FILTERS[filterIndex].css;
+    }
+    ctx.drawImage(tempCanvas, 0, 0);
     
     // THUMBNAIL
     const thumbCanvas = document.createElement('canvas');
@@ -151,9 +163,12 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
        const minDim = Math.min(canvas.width, canvas.height);
        const sx = (canvas.width - minDim) / 2;
        const sy = (canvas.height - minDim) / 2;
-       // Must also apply filter to thumbnail!
-       thumbCtx.filter = FILTERS[filterIndex].css;
-       thumbCtx.drawImage(canvas, sx, sy, minDim, minDim, 0, 0, thumbSize, thumbSize);
+       
+       if (filterIndex > 0) {
+         thumbCtx.filter = FILTERS[filterIndex].css;
+       }
+       // Draw from the unfiltered temp canvas, so the thumbCtx filter applies correctly
+       thumbCtx.drawImage(tempCanvas, sx, sy, minDim, minDim, 0, 0, thumbSize, thumbSize);
        setLastPhoto(thumbCanvas.toDataURL('image/jpeg', 0.5));
     }
     
