@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { SwitchCamera, Zap, Moon, Clock, ChevronUp } from 'lucide-react';
+import { RefreshCcw, Zap, Timer, Copy, ImagePlus, Camera as CameraIcon } from 'lucide-react';
 import './Camera.css';
 
 export default function Camera({ onViewGallery }: { onViewGallery: () => void }) {
@@ -81,23 +81,19 @@ export default function Camera({ onViewGallery }: { onViewGallery: () => void })
       
     } catch (err: any) {
       console.error('Background upload failed:', err);
-      // We don't block the UI, but we could show a subtle toast
-      setError('An upload failed in the background');
-      setTimeout(() => setError(''), 3000);
     }
   };
 
   const takePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
     
-    // Play shutter flash animation
+    // Play shutter flash instantly
     setIsFlashing(true);
-    setTimeout(() => setIsFlashing(false), 150);
+    setTimeout(() => setIsFlashing(false), 100);
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
     
-    // We want to capture the 4:3 cropped area, but for simplicity we draw the whole feed
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
@@ -109,17 +105,30 @@ export default function Camera({ onViewGallery }: { onViewGallery: () => void })
     }
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      
-      // Instantly show the photo in the thumbnail
-      const objectUrl = URL.createObjectURL(blob);
-      setLastPhoto(objectUrl);
-      
-      // Upload seamlessly in background
-      uploadPhotoInBackground(blob);
-      
-    }, 'image/jpeg', 0.8);
+    // SUPER FAST THUMBNAIL (Synchronous, tiny resolution)
+    // This updates the UI immediately without waiting for Blob encoding
+    const thumbCanvas = document.createElement('canvas');
+    const thumbSize = 120;
+    thumbCanvas.width = thumbSize;
+    thumbCanvas.height = thumbSize;
+    const thumbCtx = thumbCanvas.getContext('2d');
+    if (thumbCtx) {
+       // Crop center for square thumbnail
+       const minDim = Math.min(canvas.width, canvas.height);
+       const sx = (canvas.width - minDim) / 2;
+       const sy = (canvas.height - minDim) / 2;
+       thumbCtx.drawImage(canvas, sx, sy, minDim, minDim, 0, 0, thumbSize, thumbSize);
+       setLastPhoto(thumbCanvas.toDataURL('image/jpeg', 0.5));
+    }
+    
+    // DEFER HEAVY BLOB CREATION & UPLOAD
+    // Pushing this out of the main thread makes the shutter click feel completely instantaneous
+    setTimeout(() => {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        uploadPhotoInBackground(blob);
+      }, 'image/jpeg', 0.8);
+    }, 10);
   };
 
   return (
@@ -127,14 +136,10 @@ export default function Camera({ onViewGallery }: { onViewGallery: () => void })
       {error && <div className="error-toast">{error}</div>}
       {isFlashing && <div className="shutter-flash" />}
       
-      {/* Top Controls Bar */}
-      <div className="top-controls">
-        <button className="icon-btn"><Zap size={22} fill="currentColor" /></button>
-        <button className="icon-btn"><ChevronUp size={24} /></button>
-        <button className="icon-btn"><Clock size={22} /></button>
-      </div>
+      {/* Top spacer for the rounded camera feed */}
+      <div className="top-spacer" />
       
-      {/* Viewfinder with 4:3 aspect and grid */}
+      {/* Rounded Viewfinder */}
       <div className="viewfinder-wrapper">
         <div className="viewfinder">
           <video 
@@ -144,41 +149,40 @@ export default function Camera({ onViewGallery }: { onViewGallery: () => void })
             muted
             className={`video-feed ${facingMode === 'user' ? 'mirrored' : ''}`}
           />
-          {/* Rule of thirds grid */}
-          <div className="grid-overlay">
-            <div className="grid-line vertical" style={{ left: '33.33%' }} />
-            <div className="grid-line vertical" style={{ left: '66.66%' }} />
-            <div className="grid-line horizontal" style={{ top: '33.33%' }} />
-            <div className="grid-line horizontal" style={{ top: '66.66%' }} />
-          </div>
         </div>
       </div>
-      
-      {/* Mode Selector */}
-      <div className="mode-selector">
-        <span className="mode-text active">PHOTO</span>
-      </div>
 
-      {/* Bottom Controls Bar */}
-      <div className="bottom-controls">
-        {/* Left: Gallery Thumbnail */}
-        <button className="thumbnail-btn" onClick={onViewGallery}>
-          {lastPhoto ? (
-            <img src={lastPhoto} alt="Gallery" />
-          ) : (
-            <div className="empty-thumbnail" />
-          )}
-        </button>
-        
-        {/* Center: Shutter Button */}
-        <button className="shutter-btn" onClick={takePhoto}>
-          <div className="shutter-inner" />
-        </button>
-        
-        {/* Right: Camera Flip */}
-        <button className="flip-btn" onClick={toggleCamera}>
-          <SwitchCamera size={28} />
-        </button>
+      {/* Bottom Area containing Icons and Shutter */}
+      <div className="bottom-area">
+        {/* Row of Action Icons */}
+        <div className="action-icons-row">
+          <button className="icon-btn"><ImagePlus size={24} /></button>
+          <button className="icon-btn"><Copy size={24} /></button>
+          <button className="icon-btn"><Timer size={24} /></button>
+          <button className="icon-btn"><Zap size={24} /></button>
+          <button className="icon-btn" onClick={toggleCamera}><RefreshCcw size={24} /></button>
+        </div>
+
+        {/* Shutter & Gallery Row */}
+        <div className="shutter-row">
+          <div className="shutter-spacer" /> {/* Empty div to center shutter */}
+          
+          <button className="shutter-btn" onClick={takePhoto}>
+            <div className="shutter-inner" />
+          </button>
+          
+          <div className="gallery-thumbnail-container">
+            <button className="thumbnail-btn" onClick={onViewGallery}>
+              {lastPhoto ? (
+                <img src={lastPhoto} alt="Gallery" />
+              ) : (
+                <div className="empty-thumbnail">
+                  <CameraIcon size={24} color="#555" />
+                </div>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />

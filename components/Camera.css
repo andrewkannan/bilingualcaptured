@@ -32,16 +32,57 @@
   pointer-events: none;
 }
 
-/* TOP CONTROLS */
-.top-controls {
-  height: 80px;
+/* TOP SPACER */
+.top-spacer {
+  height: max(40px, env(safe-area-inset-top));
+  flex-shrink: 0;
+}
+
+/* VIEWFINDER */
+.viewfinder-wrapper {
+  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  padding-top: env(safe-area-inset-top);
+  justify-content: center;
+  padding: 0 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewfinder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #111;
+  border-radius: 24px; /* Rounded corners as in the screenshot */
+  overflow: hidden;
+}
+
+.video-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-feed.mirrored {
+  transform: scaleX(-1);
+}
+
+/* BOTTOM AREA */
+.bottom-area {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
   background-color: #000;
   flex-shrink: 0;
+}
+
+/* ACTION ICONS ROW */
+.action-icons-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px 32px;
 }
 
 .icon-btn {
@@ -52,133 +93,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.2s;
 }
 
-/* VIEWFINDER */
-.viewfinder-wrapper {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
-  position: relative;
-  overflow: hidden;
+.icon-btn:active {
+  opacity: 0.5;
 }
 
-.viewfinder {
-  width: 100%;
-  /* iOS typically uses 4:3 for standard photos. We force a 4:3 aspect ratio */
-  aspect-ratio: 3/4;
-  position: relative;
-  background: #111;
-  overflow: hidden;
-}
-
-.video-feed {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Cover the 4:3 area */
-}
-
-.video-feed.mirrored {
-  transform: scaleX(-1);
-}
-
-.grid-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.grid-line {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.4);
-}
-
-.grid-line.vertical {
-  top: 0;
-  bottom: 0;
-  width: 1px;
-}
-
-.grid-line.horizontal {
-  left: 0;
-  right: 0;
-  height: 1px;
-}
-
-/* MODE SELECTOR */
-.mode-selector {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #000;
-  flex-shrink: 0;
-}
-
-.mode-text {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0 12px;
-}
-
-/* Fujifilm Option A aesthetic: Yellow/Gold active text */
-.mode-text.active {
-  color: #FFCC00; /* Classic Fujifilm yellow-gold */
-}
-
-/* BOTTOM CONTROLS */
-.bottom-controls {
-  height: 120px;
-  padding-bottom: env(safe-area-inset-bottom);
+/* SHUTTER & GALLERY ROW */
+.shutter-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 32px;
-  padding-right: 32px;
-  background-color: #000;
-  flex-shrink: 0;
+  padding: 0 32px;
 }
 
-.thumbnail-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  background: #222;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  overflow: hidden;
-  position: relative;
-}
-
-.empty-thumbnail {
-  width: 100%;
-  height: 100%;
-  background: #333;
-}
-
-.thumbnail-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.shutter-spacer {
+  width: 60px; /* Balances the gallery thumbnail for perfect centering */
 }
 
 .shutter-btn {
-  width: 76px;
-  height: 76px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #fff;
   border: 4px solid #000;
-  box-shadow: 0 0 0 4px #fff;
+  box-shadow: 0 0 0 3px #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,35 +128,58 @@
 }
 
 .shutter-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 .shutter-inner {
-  width: 66px;
-  height: 66px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
   background-color: #fff;
   transition: all 0.1s ease;
 }
 
 .shutter-btn:active .shutter-inner {
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
 }
 
-.flip-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  color: #fff;
+.gallery-thumbnail-container {
+  width: 60px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.thumbnail-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px; /* Slightly rounded square */
+  background: #222;
+  border: 2px solid #333;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.1s ease;
 }
 
-.flip-btn:active {
-  background: rgba(255, 255, 255, 0.3);
+.thumbnail-btn:active {
+  transform: scale(0.9);
+}
+
+.empty-thumbnail {
+  width: 100%;
+  height: 100%;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
