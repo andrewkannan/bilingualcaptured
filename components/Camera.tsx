@@ -50,7 +50,10 @@ export default function Camera({ onPhotoTaken }: { onPhotoTaken: () => void }) {
         setIsUploading(false);
         return;
       }
+      
+      let currentStep = 'initializing';
       try {
+        currentStep = 'getting upload URL';
         const res = await fetch('/api/upload', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -59,11 +62,12 @@ export default function Camera({ onPhotoTaken }: { onPhotoTaken: () => void }) {
         
         if (!res.ok) {
            const errText = await res.text();
-           throw new Error(`Upload API Error: ${errText}`);
+           throw new Error(`API Error: ${errText}`);
         }
         
         const { presignedUrl, publicUrl } = await res.json();
         
+        currentStep = 'uploading to S3';
         const uploadRes = await fetch(presignedUrl, {
           method: 'PUT',
           body: blob,
@@ -71,9 +75,10 @@ export default function Camera({ onPhotoTaken }: { onPhotoTaken: () => void }) {
         });
         
         if (!uploadRes.ok) {
-           throw new Error(`S3 Upload failed with status ${uploadRes.status}. Check CORS.`);
+           throw new Error(`S3 Error ${uploadRes.status}`);
         }
 
+        currentStep = 'saving to database';
         const dbRes = await fetch('/api/photos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -81,14 +86,14 @@ export default function Camera({ onPhotoTaken }: { onPhotoTaken: () => void }) {
         });
         
         if (!dbRes.ok) {
-           throw new Error(`DB Save failed with status ${dbRes.status}`);
+           throw new Error(`DB Error ${dbRes.status}`);
         }
         
         onPhotoTaken();
       } catch (err: any) {
         console.error(err);
-        setError(err.message || 'Failed to upload photo.');
-        setTimeout(() => setError(''), 5000);
+        setError(`Failed while ${currentStep}: ${err.message}`);
+        setTimeout(() => setError(''), 8000);
       } finally {
         setIsUploading(false);
       }
