@@ -54,7 +54,7 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
       if (flashOn) {
         try {
           const track = newStream.getVideoTracks()[0];
-          await track.applyConstraints({ advanced: [{ torch: true }] });
+          await track.applyConstraints({ advanced: [{ torch: true } as any] });
           setHasHardwareFlash(true);
         } catch (e) {
           setHasHardwareFlash(false);
@@ -85,7 +85,7 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
     if (stream) {
       const track = stream.getVideoTracks()[0];
       try {
-        await track.applyConstraints({ advanced: [{ torch: nextState }] });
+        await track.applyConstraints({ advanced: [{ torch: nextState } as any] });
         setHasHardwareFlash(true);
       } catch (err) {
         setHasHardwareFlash(false);
