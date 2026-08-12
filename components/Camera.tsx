@@ -68,9 +68,14 @@ export default function Camera({ onPhotoTaken }: { onPhotoTaken: () => void }) {
         const { presignedUrl, publicUrl } = await res.json();
         
         currentStep = 'uploading to S3';
+        
+        // Convert Blob to ArrayBuffer. iOS Safari sometimes throws "Load failed" 
+        // when uploading raw Blobs cross-origin.
+        const arrayBuffer = await blob.arrayBuffer();
+        
         const uploadRes = await fetch(presignedUrl, {
           method: 'PUT',
-          body: blob,
+          body: arrayBuffer,
           headers: { 'Content-Type': blob.type },
         });
         
