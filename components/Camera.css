@@ -75,8 +75,17 @@
 }
 
 .top-spacer {
-  height: max(40px, env(safe-area-inset-top));
+  height: max(50px, env(safe-area-inset-top));
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-logo {
+  height: 24px;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 .viewfinder-wrapper {

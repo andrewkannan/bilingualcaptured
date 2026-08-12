@@ -4,10 +4,11 @@ import { RefreshCcw, Zap, ZapOff, Timer, Copy, Camera as CameraIcon } from 'luci
 import './Camera.css';
 
 const FILTERS = [
-  { name: 'Normal', css: 'none' },
-  { name: 'B&W', css: 'grayscale(100%)' },
-  { name: 'Sepia', css: 'sepia(80%)' },
-  { name: 'Vivid', css: 'contrast(1.2) saturate(1.5)' }
+  { name: 'Provia (Std)', css: 'contrast(1.05) saturate(1.1)' },
+  { name: 'Velvia (Vivid)', css: 'contrast(1.2) saturate(1.5) brightness(1.05)' },
+  { name: 'Astia (Soft)', css: 'contrast(0.9) saturate(1.1) sepia(0.1)' },
+  { name: 'Classic Chrome', css: 'contrast(1.1) saturate(0.8) sepia(0.2) hue-rotate(-10deg)' },
+  { name: 'Acros (B&W)', css: 'grayscale(1) contrast(1.2)' }
 ];
 
 const TIMERS = [0, 3, 10];
@@ -28,6 +29,7 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
   
   const [isFlashing, setIsFlashing] = useState(false);
   const [softwareFlash, setSoftwareFlash] = useState(false);
+  const [hasHardwareFlash, setHasHardwareFlash] = useState(false);
   
   const [filterIndex, setFilterIndex] = useState(0);
   const [timerIndex, setTimerIndex] = useState(0);
@@ -47,6 +49,18 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
       if (videoRef.current) {
         videoRef.current.srcObject = newStream;
       }
+      
+      // Re-apply torch if flash is currently on and we switch cameras
+      if (flashOn) {
+        try {
+          const track = newStream.getVideoTracks()[0];
+          await track.applyConstraints({ advanced: [{ torch: true }] });
+          setHasHardwareFlash(true);
+        } catch (e) {
+          setHasHardwareFlash(false);
+        }
+      }
+      
       setError('');
     } catch (err: any) {
       setError('Camera access denied or unavailable.');
@@ -63,7 +77,21 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
   const toggleCamera = () => setFacingMode(prev => prev === 'environment' ? 'user' : 'environment');
   const toggleFilter = () => setFilterIndex(prev => (prev + 1) % FILTERS.length);
   const toggleTimer = () => setTimerIndex(prev => (prev + 1) % TIMERS.length);
-  const toggleFlash = () => setFlashOn(prev => !prev);
+  
+  const toggleFlash = async () => {
+    const nextState = !flashOn;
+    setFlashOn(nextState);
+    
+    if (stream) {
+      const track = stream.getVideoTracks()[0];
+      try {
+        await track.applyConstraints({ advanced: [{ torch: nextState }] });
+        setHasHardwareFlash(true);
+      } catch (err) {
+        setHasHardwareFlash(false);
+      }
+    }
+  };
 
   const uploadPhotoInBackground = async (blob: Blob) => {
     try {
@@ -138,7 +166,7 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
   };
 
   const triggerCaptureSequence = () => {
-    if (flashOn) {
+    if (flashOn && !hasHardwareFlash) {
       setSoftwareFlash(true);
       // Wait 400ms for screen brightness to adjust exposure on face
       setTimeout(() => {
@@ -185,7 +213,9 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
       {/* Software Flash (flash on) */}
       {softwareFlash && <div className="software-flash" />}
       
-      <div className="top-spacer" />
+      <div className="top-spacer">
+        <img src="/icon.png" alt="Logo" className="camera-logo" />
+      </div>
       
       <div className="viewfinder-wrapper">
         <div className="viewfinder">
