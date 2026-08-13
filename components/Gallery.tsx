@@ -190,7 +190,7 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
         <div className="lightbox">
           <div className="lightbox-header">
             <button className="icon-btn" onClick={() => { setSelectedPhoto(null); setShowInfo(false); }}>
-              <X size={28} />
+              <X size={28} color="#FFF" />
             </button>
             <button className="icon-btn" onClick={() => setShowInfo(!showInfo)}>
               <Info size={24} color={showInfo ? '#FFCC00' : '#FFF'} />
@@ -229,7 +229,7 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
             </button>
             
             <button className="icon-btn" onClick={() => shareNative(selectedPhoto)}>
-              <Share size={24} />
+              <Share size={24} color="#FFF" />
             </button>
           </div>
         </div>
