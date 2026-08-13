@@ -31,11 +31,11 @@
   align-items: center;
   background: transparent;
   border: none;
-  color: #FFCC00; /* Fujifilm Yellow */
+  color: #FFCC00;
   font-size: 17px;
   cursor: pointer;
   padding: 0;
-  width: 80px; /* Fixed width for flex centering trick */
+  width: 80px;
 }
 
 .back-btn span {
@@ -44,16 +44,35 @@
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns like iOS Photos */
+  grid-template-columns: repeat(3, 1fr);
   gap: 2px;
   padding: 2px;
   padding-bottom: env(safe-area-inset-bottom);
 }
 
 .photo-card {
-  aspect-ratio: 1; /* Square thumbnails like iOS */
+  aspect-ratio: 1;
   background: #222;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   overflow: hidden;
+  position: relative;
+}
+
+.photo-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0);
+  transition: background 0.1s;
+}
+
+.photo-card:active::after {
+  background: rgba(0,0,0,0.3);
 }
 
 .photo-card img {
@@ -68,4 +87,109 @@
   padding: 3rem 1rem;
   color: rgba(255, 255, 255, 0.5);
   font-size: 15px;
+}
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+}
+
+.lightbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  padding-top: max(16px, env(safe-area-inset-top));
+}
+
+.lightbox-content {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.metadata-overlay {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metadata-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.metadata-row span {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metadata-row strong {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.lightbox-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+
+.icon-btn.danger {
+  color: #ff453a;
+}
+
+.polaroid-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFCC00;
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.polaroid-btn:active {
+  transform: scale(0.95);
+}
+
+.polaroid-btn:disabled {
+  opacity: 0.6;
+  transform: none;
 }

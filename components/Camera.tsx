@@ -93,7 +93,7 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
     }
   };
 
-  const uploadPhotoInBackground = async (blob: Blob) => {
+  const uploadPhotoInBackground = async (blob: Blob, filterName: string) => {
     try {
       const res = await fetch('/api/upload', {
         method: 'POST',
@@ -114,8 +114,15 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
       const dbRes = await fetch('/api/photos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: publicUrl }),
+        body: JSON.stringify({ url: publicUrl, filter: filterName }),
       });
+      
+      if (dbRes.ok) {
+        const photo = await dbRes.json();
+        const myIds = JSON.parse(localStorage.getItem('myPhotoIds') || '[]');
+        myIds.push(photo.id);
+        localStorage.setItem('myPhotoIds', JSON.stringify(myIds));
+      }
     } catch (err: any) {
       console.error('Background upload failed:', err);
     }
@@ -173,9 +180,10 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
     }
     
     // UPLOAD
+    const currentFilterName = FILTERS[filterIndex].name;
     setTimeout(() => {
       canvas.toBlob((blob) => {
-        if (blob) uploadPhotoInBackground(blob);
+        if (blob) uploadPhotoInBackground(blob, currentFilterName);
       }, 'image/jpeg', 0.8);
     }, 10);
   };

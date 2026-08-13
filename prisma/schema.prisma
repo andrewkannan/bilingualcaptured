@@ -13,7 +13,8 @@ datasource db {
 }
 
 model Photo {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   url       String
+  filter    String   @default("Normal")
   createdAt DateTime @default(now())
 }

@@ -15,19 +15,38 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { url } = await request.json();
+    const { url, filter } = await request.json();
     
     if (!url) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 });
     }
 
     const photo = await prisma.photo.create({
-      data: { url },
+      data: { url, filter: filter || 'Normal' },
     });
 
     return NextResponse.json(photo, { status: 201 });
   } catch (error) {
     console.error('Error saving photo:', error);
     return NextResponse.json({ error: 'Failed to save photo' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+    
+    if (!id) {
+      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+
+    await prisma.photo.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting photo:', error);
+    return NextResponse.json({ error: 'Failed to delete photo' }, { status: 500 });
   }
 }
