@@ -109,10 +109,12 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
       ctx.textAlign = 'center';
       ctx.fillText('Andrew & Kenisha', canvas.width / 2, canvas.height - 60);
       
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        const file = new File([blob], `polaroid-${photo.id}.jpg`, { type: 'image/jpeg' });
-        
+      const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+      if (!blob) throw new Error('Failed to create blob');
+      
+      const file = new File([blob], `polaroid-${photo.id}.jpg`, { type: 'image/jpeg' });
+      
+      try {
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
@@ -124,8 +126,13 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
           link.download = `polaroid-${photo.id}.jpg`;
           link.click();
         }
-        setIsGenerating(false);
-      }, 'image/jpeg', 0.9);
+      } catch (shareErr: any) {
+        if (shareErr.name !== 'AbortError') {
+          console.error(shareErr);
+        }
+      }
+      
+      setIsGenerating(false);
       
     } catch (err) {
       console.error('Failed to generate polaroid', err);
@@ -158,7 +165,7 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
       <div className="gallery-header">
         <button className="back-btn" onClick={onClose}>
           <ChevronLeft size={28} />
-          <span>Camera</span>
+          <CameraIcon size={24} style={{ marginLeft: 4 }} />
         </button>
         <h2 onClick={handleTitleTap} style={{ cursor: 'pointer', userSelect: 'none' }}>Album</h2>
         <div style={{ width: '80px' }} />
