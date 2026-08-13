@@ -10,6 +10,30 @@
   --glass-border: rgba(255, 255, 255, 0.08);
 }
 
+.theme-dark {
+  --cam-bg: #000000;
+  --cam-text: #ffffff;
+  --cam-icon: #ffffff;
+  --cam-header: #111111;
+  --cam-border: #333333;
+  --cam-shutter: #ffffff;
+  --cam-shutter-inner: #ffffff;
+  --cam-shutter-active: #e0e0e0;
+  --cam-viewfinder-bg: #111111;
+}
+
+.theme-light {
+  --cam-bg: #ffffff;
+  --cam-text: #000000;
+  --cam-icon: #000000;
+  --cam-header: #f5f5f5;
+  --cam-border: #e0e0e0;
+  --cam-shutter: #000000;
+  --cam-shutter-inner: #000000;
+  --cam-shutter-active: #333333;
+  --cam-viewfinder-bg: #f0f0f0;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;

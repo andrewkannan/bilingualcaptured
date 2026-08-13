@@ -6,19 +6,33 @@ import './page.css';
 
 export default function Home() {
   const [view, setView] = useState<'camera' | 'gallery'>('camera');
-  // Hoist lastPhoto state so it persists when switching views
   const [lastPhoto, setLastPhoto] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour >= 7 && hour < 18) {
+      setTheme('light');
+    }
+  }, []);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout theme-${theme}`}>
       {view === 'camera' ? (
         <Camera 
           onViewGallery={() => setView('gallery')} 
           lastPhoto={lastPhoto} 
-          setLastPhoto={setLastPhoto} 
+          setLastPhoto={setLastPhoto}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
       ) : (
-        <Gallery onClose={() => setView('camera')} />
+        <Gallery 
+          onClose={() => setView('camera')} 
+          theme={theme}
+        />
       )}
     </div>
   );

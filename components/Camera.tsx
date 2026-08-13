@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { RefreshCcw, Zap, ZapOff, Timer, Copy, Camera as CameraIcon } from 'lucide-react';
+import { RefreshCcw, Zap, ZapOff, Timer, Copy, Camera as CameraIcon, Sun, Moon } from 'lucide-react';
 import './Camera.css';
 
 const FILTERS = [
@@ -17,9 +17,11 @@ interface CameraProps {
   onViewGallery: () => void;
   lastPhoto: string | null;
   setLastPhoto: (url: string | null) => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
-export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: CameraProps) {
+export default function Camera({ onViewGallery, lastPhoto, setLastPhoto, theme, toggleTheme }: CameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -134,25 +136,40 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
     const video = videoRef.current;
     const canvas = canvasRef.current;
     
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // 3:2 Classic Aspect Ratio Center Crop (vertical 2:3)
+    const targetRatio = 2 / 3;
+    const currentRatio = video.videoWidth / video.videoHeight;
+    
+    let sWidth = video.videoWidth;
+    let sHeight = video.videoHeight;
+    let sx = 0;
+    let sy = 0;
+    
+    if (currentRatio < targetRatio) {
+      sHeight = sWidth / targetRatio;
+      sy = (video.videoHeight - sHeight) / 2;
+    } else {
+      sWidth = sHeight * targetRatio;
+      sx = (video.videoWidth - sWidth) / 2;
+    }
+    
+    canvas.width = sWidth;
+    canvas.height = sHeight;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
     // iOS Safari WebKit Bug Fix:
-    // Drawing a <video> directly to a canvas with ctx.filter sometimes ignores the filter.
-    // Solution: Draw the raw video to a temporary offscreen canvas first.
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
+    tempCanvas.width = sWidth;
+    tempCanvas.height = sHeight;
     const tempCtx = tempCanvas.getContext('2d');
     if (!tempCtx) return;
 
     if (facingMode === 'user') {
-      tempCtx.translate(tempCanvas.width, 0);
+      tempCtx.translate(sWidth, 0);
       tempCtx.scale(-1, 1);
     }
-    tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+    tempCtx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
 
     // Now apply the filter to our main canvas and draw the temp canvas onto it
     if (filterIndex > 0) {
@@ -237,6 +254,9 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
       {softwareFlash && <div className="software-flash" />}
       
       <div className="top-spacer">
+        <button className="icon-btn theme-toggle" onClick={toggleTheme}>
+          {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
+        </button>
         <img src="/icon.png" alt="Logo" className="camera-logo" />
       </div>
       
@@ -272,7 +292,7 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto }: Camer
             {TIMERS[timerIndex] > 0 && <span className="timer-badge">{TIMERS[timerIndex]}s</span>}
           </button>
           <button className="icon-btn flash-btn" onClick={toggleFlash}>
-            {flashOn ? <Zap size={24} fill="#FFCC00" color="#FFCC00" /> : <ZapOff size={24} />}
+            {flashOn ? <Zap size={24} fill="var(--cam-icon)" /> : <ZapOff size={24} />}
           </button>
           <button className="icon-btn" onClick={toggleCamera}>
             <RefreshCcw size={24} />

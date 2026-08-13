@@ -10,7 +10,7 @@ interface Photo {
   createdAt: string;
 }
 
-export default function Gallery({ onClose }: { onClose: () => void }) {
+export default function Gallery({ onClose, theme }: { onClose: () => void, theme: 'light' | 'dark' }) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [myPhotoIds, setMyPhotoIds] = useState<string[]>([]);
