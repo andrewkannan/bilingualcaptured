@@ -254,10 +254,10 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto, theme, 
       {softwareFlash && <div className="software-flash" />}
       
       <div className="top-spacer">
+        <img src="/icon.png" alt="Logo" className="camera-logo" />
         <button className="icon-btn theme-toggle" onClick={toggleTheme}>
           {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
         </button>
-        <img src="/icon.png" alt="Logo" className="camera-logo" />
       </div>
       
       <div className="viewfinder-wrapper">
