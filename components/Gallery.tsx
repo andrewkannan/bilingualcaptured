@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ChevronLeft, Info, X, Share, Trash2, Camera as CameraIcon } from 'lucide-react';
 import './Gallery.css';
 
@@ -18,6 +18,10 @@ export default function Gallery({ onClose }: { onClose: () => void }) {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [tapCount, setTapCount] = useState(0);
+  const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMyPhotoIds(JSON.parse(localStorage.getItem('myPhotoIds') || '[]'));
@@ -52,6 +56,22 @@ export default function Gallery({ onClose }: { onClose: () => void }) {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleTitleTap = () => {
+    const newCount = tapCount + 1;
+    setTapCount(newCount);
+    
+    if (newCount >= 5) {
+      setIsAdmin(true);
+      alert('Admin Mode Activated! You can now delete any photo.');
+      setTapCount(0);
+    }
+    
+    if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+    tapTimeoutRef.current = setTimeout(() => {
+      setTapCount(0);
+    }, 2000);
   };
 
   const sharePolaroid = async (photo: Photo) => {
@@ -140,7 +160,7 @@ export default function Gallery({ onClose }: { onClose: () => void }) {
           <ChevronLeft size={28} />
           <span>Camera</span>
         </button>
-        <h2>Album</h2>
+        <h2 onClick={handleTitleTap} style={{ cursor: 'pointer', userSelect: 'none' }}>Album</h2>
         <div style={{ width: '80px' }} />
       </div>
 
@@ -188,7 +208,7 @@ export default function Gallery({ onClose }: { onClose: () => void }) {
           </div>
           
           <div className="lightbox-footer">
-            {myPhotoIds.includes(selectedPhoto.id) ? (
+            {(isAdmin || myPhotoIds.includes(selectedPhoto.id)) ? (
               <button className="icon-btn danger" onClick={() => handleDelete(selectedPhoto.id)}>
                 <Trash2 size={24} />
               </button>
