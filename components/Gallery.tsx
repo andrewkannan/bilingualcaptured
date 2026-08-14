@@ -95,36 +95,52 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      // Draw an off-white polaroid background
-      ctx.fillStyle = '#FAFAFA';
+      // Draw a vintage, slightly aged paper background
+      ctx.fillStyle = '#F4EFE6'; // Cream/aged paper color
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
+      // Add a subtle vignette (darkened edges) around the whole polaroid for a retro feel
+      const outerGrad = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, canvas.width * 0.4,
+        canvas.width / 2, canvas.height / 2, canvas.width * 0.8
+      );
+      outerGrad.addColorStop(0, 'rgba(0,0,0,0)');
+      outerGrad.addColorStop(1, 'rgba(0,0,0,0.06)');
+      ctx.fillStyle = outerGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       // Add a subtle border around the whole polaroid for realism
-      ctx.strokeStyle = '#EAEAEA';
+      ctx.strokeStyle = '#D9D0C1'; // Slightly darker cream for the edge
       ctx.lineWidth = 2;
       ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
 
-      // Add a thin border immediately around the photo area
-      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+      // Add a thin dark border immediately around the photo area
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
       ctx.lineWidth = 1;
       ctx.strokeRect(padding - 1, padding - 1, img.width + 2, img.height + 2);
 
       // Add a realistic drop shadow to the photo itself
-      ctx.shadowColor = 'rgba(0,0,0,0.15)';
-      ctx.shadowBlur = 15;
-      ctx.shadowOffsetY = 4;
-      ctx.drawImage(img, padding, padding, img.width, img.height);
-      ctx.shadowColor = 'transparent';
+      ctx.shadowColor = 'rgba(0,0,0,0.25)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 2;
       
-      // Instagramable handwritten text
-      ctx.fillStyle = '#2c2c2c'; // Soft black, looks more like ink
+      // Apply a vintage filter to the photo (sepia, slightly faded contrast)
+      ctx.filter = 'sepia(30%) contrast(1.1) brightness(0.9) saturate(0.85)';
+      ctx.drawImage(img, padding, padding, img.width, img.height);
+      
+      // Reset shadow and filter for text
+      ctx.shadowColor = 'transparent';
+      ctx.filter = 'none';
+      
+      // Instagramable handwritten text with faded ink color
+      ctx.fillStyle = '#3a312a'; // Faded brown/black ink
       ctx.font = '600 70px "Caveat", "Dancing Script", "Brush Script MT", "Bradley Hand", cursive';
       ctx.textAlign = 'center';
       
       // Add slight rotation to text for an organic, handwritten feel
       ctx.save();
       ctx.translate(canvas.width / 2, canvas.height - 65);
-      ctx.rotate(-0.02);
+      ctx.rotate(-0.03);
       ctx.fillText('This is CCC JB Bilingual', 0, 0);
       ctx.restore();
       
