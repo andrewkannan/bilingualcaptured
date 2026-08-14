@@ -1,0 +1,240 @@
+.present-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #fcfbfa; /* Light, bright, slightly warm background */
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(245, 240, 235, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(235, 230, 225, 0.9) 0%, transparent 50%);
+  color: #111;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.present-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.02%22/%3E%3C/svg%3E');
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Left Panel - Branding & QR */
+.present-sidebar {
+  width: 450px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem 2rem;
+  z-index: 10;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+}
+
+.brand-section h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #111;
+  text-shadow: 0 0 10px rgba(0,0,0,0.05);
+  background: linear-gradient(135deg, #111 0%, #555 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-section p {
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(0,0,0,0.02);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.qr-wrapper {
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.qr-text {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.stats-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.photo-count {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+  text-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.photo-count-label {
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Pulsing Live Indicator */
+@keyframes pulseLive {
+  0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+}
+
+.live-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #e11d48;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulseLive 2s infinite;
+}
+
+/* Right Panel - Photo Collage */
+.present-gallery-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+/* Floating animation for the collage background */
+@keyframes drift {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(0deg); }
+}
+
+.gallery-scroller {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
+  gap: 1.5rem;
+  padding: 2rem;
+  height: max-content;
+  animation: drift 120s linear infinite; /* Very slow drift */
+}
+
+/* Scattered Collage Styling */
+.present-photo-card {
+  background: #FFF;
+  padding: 12px 12px 50px 12px;
+  border-radius: 2px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  position: relative;
+  width: 260px; /* Fixed smaller width for more photos per line */
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+/* Alternating rotations for collage effect */
+.present-photo-card:nth-child(5n+1) { transform: rotate(-6deg) translateY(10px); }
+.present-photo-card:nth-child(5n+2) { transform: rotate(4deg) translateY(-15px); }
+.present-photo-card:nth-child(5n+3) { transform: rotate(-2deg) translateY(5px); }
+.present-photo-card:nth-child(5n+4) { transform: rotate(7deg) translateY(-5px); }
+.present-photo-card:nth-child(5n+5) { transform: rotate(-4deg) translateY(20px); }
+
+.present-photo-card img {
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+  /* Lighter filter for light mode */
+  filter: sepia(10%) contrast(1.05) brightness(1) saturate(0.95);
+}
+
+/* Cinematic Fade In for new photos */
+@keyframes fadeInUpScale {
+  0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUpScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0; /* Starts hidden, animation makes it visible */
+}
+
+/* Latest Memory Spotlight (Small Widget) */
+@keyframes slideInRight {
+  0% { opacity: 0; transform: translateX(100px) rotate(10deg) scale(0.8); }
+  20% { opacity: 1; transform: translateX(-10px) rotate(-4deg) scale(1.05); }
+  30% { transform: translateX(0) rotate(-2deg) scale(1); }
+  90% { opacity: 1; transform: translateX(0) rotate(-2deg) scale(1); }
+  100% { opacity: 0; transform: translateX(50px) rotate(5deg) scale(0.9); }
+}
+
+.spotlight-widget {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  width: 320px;
+  background: #FFF;
+  padding: 16px 16px 60px 16px;
+  border-radius: 4px;
+  box-shadow: -10px 20px 50px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
+  animation: slideInRight 5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 51;
+}
+
+.spotlight-widget img {
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  filter: sepia(10%) contrast(1.05);
+}
+
+.spotlight-widget .caption {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 2.2rem;
+  color: #3a312a;
+}
+
+.new-badge {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  background: #e11d48;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.5);
+  transform: rotate(-10deg);
+  z-index: 2;
+}
