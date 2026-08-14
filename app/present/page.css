@@ -22,23 +22,17 @@
   z-index: 1;
 }
 
-/* Left Panel - Branding & QR (Full Glass Overlay) */
+/* Left Panel - Branding & QR */
 .present-sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
   width: 450px;
-  background: rgba(10, 10, 10, 0.2); /* Much more transparent */
-  backdrop-filter: blur(50px); /* Extreme glass blur */
-  -webkit-backdrop-filter: blur(50px);
+  background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 3rem 2rem;
-  z-index: 50;
-  box-shadow: 20px 0 50px rgba(0,0,0,0.5); /* Cast shadow over the gallery */
+  z-index: 10;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.5);
 }
 
 .brand-section h1 {
@@ -58,74 +52,29 @@
   line-height: 1.5;
 }
 
-/* Animated Glow Background for QR */
-@keyframes glowRotate {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Floating Glass Card Animation */
-@keyframes floatGlass {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0px); }
-}
-
 .qr-section {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  /* Removed old solid border/bg, moved to glass-card inside */
-}
-
-/* The colorful glow behind the glass */
-.qr-section::before {
-  content: "";
-  position: absolute;
-  top: 10%; left: 10%; right: 10%; bottom: 10%;
-  background: linear-gradient(45deg, #ff007f, #7928ca, #0070f3, #ff007f);
-  background-size: 300% 300%;
-  animation: glowRotate 6s ease infinite;
-  filter: blur(45px);
-  opacity: 0.35; /* Strong enough to see in dark mode */
-  z-index: 1;
-  border-radius: 50%;
-}
-
-/* The Glassmorphism Card */
-.qr-glass-card {
-  position: relative;
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.05); /* Very transparent dark mode glass */
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  animation: floatGlass 5s ease-in-out infinite;
+  background: rgba(255,255,255,0.02);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.03);
 }
 
 .qr-wrapper {
   background: #fff;
-  padding: 1rem;
-  border-radius: 16px; /* Smooth inner radius */
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.05);
 }
 
 .qr-text {
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.1rem;
-  color: #fff;
-  letter-spacing: 0.5px;
+  color: #d1c8b8;
 }
 
 .stats-section {
@@ -134,14 +83,11 @@
 }
 
 .photo-count {
-  font-size: 4rem; /* Slightly larger */
+  font-size: 3.5rem;
   font-weight: 900;
+  color: #fff;
   line-height: 1;
-  /* Sleek metallic/gradient fill for the number */
-  background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 10px 30px rgba(255,255,255,0.1);
+  text-shadow: 0 0 20px rgba(255,255,255,0.2);
 }
 
 .photo-count-label {
@@ -175,16 +121,14 @@
 /* Right Panel - Cinematic Film Strip (2 Rows) */
 .present-gallery-wrapper {
   flex: 1;
-  width: 100%;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
+  align-items: center; /* Center the film strips horizontally */
   padding: 0; 
-  gap: 20px; 
-  /* The film strips will scroll under the absolute positioned sidebar */
+  gap: 20px; /* Space between the two tracks */
 }
 
 /* Horizontal scrolling animations */
