@@ -49,6 +49,15 @@ export default function PresentationPage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Split photos for two tracks
+  const topPhotos = photos.filter((_, i) => i % 2 === 0);
+  const bottomPhotos = photos.filter((_, i) => i % 2 !== 0);
+
+  // Helper to generate markings
+  const getMarkings = (index: number) => {
+    return `KODAK 400   ${(index % 12) + 1} A   ${new Date().toISOString().split('T')[0]}   CCC JB BILINGUAL`;
+  };
+
   return (
     <div className="present-container">
       {/* Left Sidebar */}
@@ -74,28 +83,46 @@ export default function PresentationPage() {
         </div>
       </div>
 
-      {/* Right Gallery Area - Cinematic Film Strip */}
+      {/* Right Gallery Area - Cinematic Film Strip (2 Rows) */}
       <div className="present-gallery-wrapper">
-        <div className="film-strip-track">
-          {photos.map(photo => (
+        <div className="film-strip-track track-top">
+          {topPhotos.map((photo, i) => (
             <div key={photo.id} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
+              <div className="film-markings">{getMarkings(i)}</div>
             </div>
           ))}
-          {/* Render extra duplicates to make the film strip long enough to loop */}
-          {photos.length > 0 && photos.length < 20 && photos.map(photo => (
+          {topPhotos.length > 0 && topPhotos.length < 15 && topPhotos.map((photo, i) => (
             <div key={`${photo.id}-dup1`} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
+              <div className="film-markings">{getMarkings(i + 15)}</div>
             </div>
           ))}
-          {photos.length > 0 && photos.length < 20 && photos.map(photo => (
+          {topPhotos.length > 0 && topPhotos.length < 15 && topPhotos.map((photo, i) => (
             <div key={`${photo.id}-dup2`} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
+              <div className="film-markings">{getMarkings(i + 30)}</div>
             </div>
           ))}
-          {photos.length > 0 && photos.length < 20 && photos.map(photo => (
-            <div key={`${photo.id}-dup3`} className="film-frame">
+        </div>
+
+        <div className="film-strip-track track-bottom">
+          {bottomPhotos.map((photo, i) => (
+            <div key={photo.id} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
+              <div className="film-markings">{getMarkings(i)}</div>
+            </div>
+          ))}
+          {bottomPhotos.length > 0 && bottomPhotos.length < 15 && bottomPhotos.map((photo, i) => (
+            <div key={`${photo.id}-dup1`} className="film-frame">
+              <img src={photo.url} alt="Guest memory" />
+              <div className="film-markings">{getMarkings(i + 15)}</div>
+            </div>
+          ))}
+          {bottomPhotos.length > 0 && bottomPhotos.length < 15 && bottomPhotos.map((photo, i) => (
+            <div key={`${photo.id}-dup2`} className="film-frame">
+              <img src={photo.url} alt="Guest memory" />
+              <div className="film-markings">{getMarkings(i + 30)}</div>
             </div>
           ))}
         </div>

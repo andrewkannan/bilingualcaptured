@@ -119,34 +119,48 @@
   animation: pulseLive 2s infinite;
 }
 
-/* Right Panel - Cinematic Film Strip */
+/* Right Panel - Cinematic Film Strip (2 Rows) */
 .present-gallery-wrapper {
   flex: 1;
   position: relative;
   overflow: hidden;
   display: flex;
-  align-items: center; /* Center the film strip vertically */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 0;
+  gap: 20px;
 }
 
-/* Horizontal scrolling animation */
+/* Horizontal scrolling animations */
 @keyframes scrollLeft {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
+@keyframes scrollRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
 .film-strip-track {
   display: flex;
-  /* For light mode, the film strip is still dark because it's a physical film, but maybe slightly softer */
   background-color: #1a1a1a; 
   padding: 40px 10px; /* Space top and bottom for sprocket holes */
   position: relative;
-  height: 480px; /* Height of the film strip */
+  height: 380px; /* Reduced height to fit 2 rows */
   align-items: center;
   gap: 12px;
-  animation: scrollLeft 90s linear infinite; /* Slow horizontal pan */
   width: max-content;
   box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+.track-top {
+  animation: scrollLeft 100s linear infinite; 
+}
+
+.track-bottom {
+  animation: scrollRight 110s linear infinite; 
 }
 
 /* Sprocket holes */
@@ -177,7 +191,6 @@
   aspect-ratio: 4 / 3; /* Standard cinematic ratio */
   background: #000;
   flex-shrink: 0;
-  overflow: hidden;
   position: relative;
   border-radius: 2px;
 }
@@ -188,6 +201,21 @@
   object-fit: cover;
   /* Cinematic color grading: slightly desaturated, higher contrast, subtle warmth */
   filter: grayscale(15%) sepia(10%) contrast(1.15) brightness(0.95);
+  border-radius: 2px;
+}
+
+/* Orange Film Edge Markings */
+.film-markings {
+  position: absolute;
+  bottom: -28px; /* Position down in the track padding area */
+  left: 5px;
+  color: #ff9900; /* Kodak Edge Orange */
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  opacity: 0.8;
+  white-space: nowrap;
 }
 
 /* Camera Flash Effect for Spotlight */
