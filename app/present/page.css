@@ -2,20 +2,33 @@
   display: flex;
   height: 100vh;
   width: 100vw;
-  background-color: #1a1511; /* Darker, slightly warm vintage background */
-  background-image: radial-gradient(circle at center, #2a221b 0%, #110d0a 100%);
+  background-color: #0f0a07; /* Deep, rich ambient dark background */
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(30, 20, 15, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(20, 15, 10, 0.9) 0%, transparent 50%);
   color: #fff;
   font-family: 'Inter', sans-serif;
   overflow: hidden;
   position: relative;
 }
 
+/* Optional: subtle animated film grain/noise could go here via a pseudo-element, but the radial gradients provide a very cinematic feel */
+.present-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.04%22/%3E%3C/svg%3E');
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* Left Panel - Branding & QR */
 .present-sidebar {
   width: 450px;
-  background: rgba(10, 8, 6, 0.8);
-  backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(15, 12, 10, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -28,7 +41,11 @@
   font-size: 2.2rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  color: #F4EFE6;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255,255,255,0.3);
+  background: linear-gradient(135deg, #fff 0%, #d1c8b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .brand-section p {
@@ -81,6 +98,26 @@
   letter-spacing: 2px;
   font-size: 0.85rem;
   margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Pulsing Live Indicator */
+@keyframes pulseLive {
+  0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+}
+
+.live-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #e11d48;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulseLive 2s infinite;
 }
 
 /* Right Panel - Photo Collage */
@@ -135,15 +172,15 @@
   filter: sepia(30%) contrast(1.1) brightness(0.9) saturate(0.85);
 }
 
-.present-photo-caption {
-  position: absolute;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-family: 'Caveat', cursive;
-  font-size: 1.8rem;
-  color: #3a312a;
+/* Cinematic Fade In for new photos */
+@keyframes fadeInUpScale {
+  0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUpScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0; /* Starts hidden, animation makes it visible */
 }
 
 /* Latest Memory Spotlight (Small Widget) */

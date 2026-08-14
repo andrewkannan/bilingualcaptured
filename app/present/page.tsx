@@ -70,7 +70,10 @@ export default function PresentationPage() {
 
         <div className="stats-section">
           <div className="photo-count">{photos.length}</div>
-          <div className="photo-count-label">Photos Captured</div>
+          <div className="photo-count-label">
+            <span className="live-indicator"></span>
+            Photos Captured
+          </div>
         </div>
       </div>
 
@@ -78,22 +81,19 @@ export default function PresentationPage() {
       <div className="present-gallery-wrapper">
         <div className="gallery-scroller">
           {photos.map(photo => (
-            <div key={photo.id} className="present-photo-card">
+            <div key={photo.id} className="present-photo-card animate-fade-in-up">
               <img src={photo.url} alt="Guest memory" />
-              <div className="present-photo-caption">CCC JB Bilingual</div>
             </div>
           ))}
           {/* Render a few more times for a dense collage look if there are very few photos */}
           {photos.length > 0 && photos.length < 15 && photos.map(photo => (
-            <div key={`${photo.id}-dup1`} className="present-photo-card">
+            <div key={`${photo.id}-dup1`} className="present-photo-card animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <img src={photo.url} alt="Guest memory" />
-              <div className="present-photo-caption">CCC JB Bilingual</div>
             </div>
           ))}
           {photos.length > 0 && photos.length < 8 && photos.map(photo => (
-            <div key={`${photo.id}-dup2`} className="present-photo-card">
+            <div key={`${photo.id}-dup2`} className="present-photo-card animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
               <img src={photo.url} alt="Guest memory" />
-              <div className="present-photo-caption">CCC JB Bilingual</div>
             </div>
           ))}
         </div>
