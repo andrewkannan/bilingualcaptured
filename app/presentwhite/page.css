@@ -53,29 +53,74 @@
   line-height: 1.5;
 }
 
+/* Animated Glow Background for QR */
+@keyframes glowRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating Glass Card Animation */
+@keyframes floatGlass {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
 .qr-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The colorful glow behind the glass */
+.qr-section::before {
+  content: "";
+  position: absolute;
+  top: 10%; left: 10%; right: 10%; bottom: 10%;
+  /* Slightly brighter gradient for light mode */
+  background: linear-gradient(45deg, #ff4d94, #9d4edd, #4361ee, #ff4d94);
+  background-size: 300% 300%;
+  animation: glowRotate 6s ease infinite;
+  filter: blur(45px);
+  opacity: 0.3; /* Subtle glow in light mode */
+  z-index: 1;
+  border-radius: 50%;
+}
+
+/* The Glassmorphism Card */
+.qr-glass-card {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.7); /* Frosted white glass */
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  background: rgba(0,0,0,0.02);
-  padding: 2rem;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.05);
+  animation: floatGlass 5s ease-in-out infinite;
 }
 
 .qr-wrapper {
   background: #fff;
-  padding: 1.2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
 .qr-text {
   text-align: center;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 1.1rem;
-  color: #444;
+  color: #333;
+  letter-spacing: 0.5px;
 }
 
 .stats-section {
@@ -84,11 +129,14 @@
 }
 
 .photo-count {
-  font-size: 3.5rem;
+  font-size: 4rem; /* Slightly larger */
   font-weight: 900;
-  color: #222;
   line-height: 1;
-  text-shadow: 0 0 15px rgba(0,0,0,0.05);
+  /* Sleek metallic dark gradient fill for the number */
+  background: linear-gradient(135deg, #111111 0%, #555555 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
 .photo-count-label {

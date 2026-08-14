@@ -68,10 +68,12 @@ export default function PresentationWhitePage() {
         </div>
 
         <div className="qr-section">
-          <div className="qr-wrapper">
-            <QRCodeSVG value={origin} size={300} level="H" />
+          <div className="qr-glass-card">
+            <div className="qr-wrapper">
+              <QRCodeSVG value={origin} size={250} level="H" />
+            </div>
+            <div className="qr-text">Scan to Take a Photo!</div>
           </div>
-          <div className="qr-text">Scan to Take a Photo!</div>
         </div>
 
         <div className="stats-section">
