@@ -95,19 +95,38 @@ export default function Gallery({ onClose, theme }: { onClose: () => void, theme
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      ctx.fillStyle = '#FFFFFF';
+      // Draw an off-white polaroid background
+      ctx.fillStyle = '#FAFAFA';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Add a slight drop shadow inside the polaroid frame for realism
-      ctx.shadowColor = 'rgba(0,0,0,0.1)';
-      ctx.shadowBlur = 10;
+      // Add a subtle border around the whole polaroid for realism
+      ctx.strokeStyle = '#EAEAEA';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+
+      // Add a thin border immediately around the photo area
+      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(padding - 1, padding - 1, img.width + 2, img.height + 2);
+
+      // Add a realistic drop shadow to the photo itself
+      ctx.shadowColor = 'rgba(0,0,0,0.15)';
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetY = 4;
       ctx.drawImage(img, padding, padding, img.width, img.height);
       ctx.shadowColor = 'transparent';
       
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 60px "Marker Felt", "Comic Sans MS", cursive';
+      // Instagramable handwritten text
+      ctx.fillStyle = '#2c2c2c'; // Soft black, looks more like ink
+      ctx.font = '600 70px "Caveat", "Dancing Script", "Brush Script MT", "Bradley Hand", cursive';
       ctx.textAlign = 'center';
-      ctx.fillText('Andrew & Kenisha', canvas.width / 2, canvas.height - 60);
+      
+      // Add slight rotation to text for an organic, handwritten feel
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height - 65);
+      ctx.rotate(-0.02);
+      ctx.fillText('This is CCC JB Bilingual', 0, 0);
+      ctx.restore();
       
       const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
       if (!blob) throw new Error('Failed to create blob');
