@@ -1,0 +1,246 @@
+.present-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: #050505;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Panel - Branding & QR */
+.present-sidebar {
+  width: 400px;
+  background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem 2rem;
+  z-index: 10;
+}
+
+.brand-section h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: -webkit-linear-gradient(#fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-section p {
+  color: #888;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.qr-wrapper {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(255,255,255,0.1);
+}
+
+.qr-text {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #e0e0e0;
+}
+
+.stats-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.photo-count {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.photo-count-label {
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* Right Panel - Gallery */
+.present-gallery-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 60px; /* Space for ticker */
+}
+
+/* Moving grid animation */
+@keyframes scrollUp {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.gallery-scroller {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  height: max-content;
+  animation: scrollUp 60s linear infinite;
+}
+
+.gallery-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+}
+
+.gallery-column:nth-child(even) {
+  margin-top: 4rem;
+}
+
+.present-photo-card {
+  background: #FAFAFA;
+  padding: 16px 16px 64px 16px;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  position: relative;
+  transform: rotate(-2deg);
+  transition: transform 0.3s ease;
+}
+
+.gallery-column:nth-child(even) .present-photo-card {
+  transform: rotate(2deg);
+}
+
+.present-photo-card img {
+  width: 100%;
+  border-radius: 2px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+  filter: sepia(20%) contrast(1.1);
+}
+
+.present-photo-caption {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 2rem;
+  color: #3a312a;
+}
+
+/* Latest Memory Spotlight */
+@keyframes popIn {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8) rotate(-10deg); }
+  10% { opacity: 1; transform: translate(-50%, -50%) scale(1.05) rotate(2deg); }
+  15% { transform: translate(-50%, -50%) scale(1) rotate(-1deg); }
+  90% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-1deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9) translateY(100px); }
+}
+
+.spotlight-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.spotlight-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  background: #F4EFE6;
+  padding: 24px 24px 100px 24px;
+  border-radius: 8px;
+  box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+  animation: popIn 6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 51;
+}
+
+.spotlight-card img {
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  filter: sepia(30%) contrast(1.1);
+}
+
+.spotlight-card .caption {
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 3.5rem;
+  color: #3a312a;
+}
+
+.new-badge {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #e11d48;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.5);
+  transform: rotate(10deg);
+}
+
+/* Marquee Ticker */
+.ticker-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 400px; /* Start after sidebar */
+  right: 0;
+  height: 60px;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 20;
+}
+
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.ticker-text {
+  white-space: nowrap;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+  animation: ticker 25s linear infinite;
+  display: inline-block;
+  padding-left: 100%;
+}
