@@ -63,7 +63,7 @@ export default function PresentationWhitePage() {
       {/* Left Sidebar */}
       <div className="present-sidebar">
         <div className="brand-section">
-          <h1>CCC JB Bilingual</h1>
+          <img src="/logo-light.png" alt="Captured" style={{ width: '100%', maxWidth: '280px', marginBottom: '1rem' }} />
           <p>Scan the QR code to capture and share your moments live on the big screen!</p>
         </div>
 
