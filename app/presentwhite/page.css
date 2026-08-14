@@ -21,19 +21,23 @@
   z-index: 1;
 }
 
-/* Left Panel - Branding & QR */
+/* Left Panel - Branding & QR (Full Glass Overlay) */
 .present-sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 450px;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.4); /* More transparent for blur */
+  backdrop-filter: blur(50px); /* Extreme glass blur */
+  -webkit-backdrop-filter: blur(50px);
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 3rem 2rem;
-  z-index: 10;
-  box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+  z-index: 50;
+  box-shadow: 20px 0 50px rgba(0,0,0,0.05); /* Cast subtle shadow over gallery */
 }
 
 .brand-section h1 {
@@ -170,6 +174,7 @@
 /* Right Panel - Cinematic Film Strip (2 Rows) */
 .present-gallery-wrapper {
   flex: 1;
+  width: 100%;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -178,6 +183,7 @@
   align-items: center;
   padding: 0;
   gap: 20px;
+  /* The film strips will scroll under the absolute positioned sidebar */
 }
 
 /* Horizontal scrolling animations */
