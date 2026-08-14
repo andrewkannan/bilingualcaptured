@@ -52,12 +52,6 @@ export default function PresentationPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Split photos into 3 columns for masonry-like layout
-  const columns = [[], [], []] as Photo[][];
-  photos.forEach((photo, i) => {
-    columns[i % 3].push(photo);
-  });
-
   return (
     <div className="present-container">
       {/* Left Sidebar */}
@@ -80,46 +74,39 @@ export default function PresentationPage() {
         </div>
       </div>
 
-      {/* Right Gallery Area */}
+      {/* Right Gallery Area - Photo Collage */}
       <div className="present-gallery-wrapper">
         <div className="gallery-scroller">
-          {columns.map((col, colIndex) => (
-            <div key={colIndex} className="gallery-column">
-              {col.map(photo => (
-                <div key={photo.id} className="present-photo-card">
-                  <img src={photo.url} alt="Guest memory" />
-                  <div className="present-photo-caption">CCC JB Bilingual</div>
-                </div>
-              ))}
-              {/* Render again to loop visually if there are few photos */}
-              {col.map(photo => (
-                <div key={`${photo.id}-dup`} className="present-photo-card">
-                  <img src={photo.url} alt="Guest memory" />
-                  <div className="present-photo-caption">CCC JB Bilingual</div>
-                </div>
-              ))}
+          {photos.map(photo => (
+            <div key={photo.id} className="present-photo-card">
+              <img src={photo.url} alt="Guest memory" />
+              <div className="present-photo-caption">CCC JB Bilingual</div>
+            </div>
+          ))}
+          {/* Render a few more times for a dense collage look if there are very few photos */}
+          {photos.length > 0 && photos.length < 15 && photos.map(photo => (
+            <div key={`${photo.id}-dup1`} className="present-photo-card">
+              <img src={photo.url} alt="Guest memory" />
+              <div className="present-photo-caption">CCC JB Bilingual</div>
+            </div>
+          ))}
+          {photos.length > 0 && photos.length < 8 && photos.map(photo => (
+            <div key={`${photo.id}-dup2`} className="present-photo-card">
+              <img src={photo.url} alt="Guest memory" />
+              <div className="present-photo-caption">CCC JB Bilingual</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Spotlight Overlay */}
+      {/* Spotlight Widget (Small pinned corner widget) */}
       {spotlightPhoto && (
-        <div className="spotlight-overlay">
-          <div className="spotlight-card">
-            <div className="new-badge">NEW!</div>
-            <img src={spotlightPhoto.url} alt="New memory" />
-            <div className="caption">Just Captured!</div>
-          </div>
+        <div className="spotlight-widget">
+          <div className="new-badge">NEW!</div>
+          <img src={spotlightPhoto.url} alt="New memory" />
+          <div className="caption">Just Captured!</div>
         </div>
       )}
-
-      {/* Ticker */}
-      <div className="ticker-wrap">
-        <div className="ticker-text">
-          ✨ Welcome to CCC JB Bilingual! Grab your phone, scan the QR code on the left, and take a photo to see it appear here instantly! ✨
-        </div>
-      </div>
     </div>
   );
 }
