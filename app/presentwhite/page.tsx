@@ -58,6 +58,39 @@ export default function PresentationWhitePage() {
     return `KODAK 400   ${(index % 12) + 1} A   ${new Date().toISOString().split('T')[0]}   CCC JB BILINGUAL`;
   };
 
+  // Helper to render track contents (we render it twice per track for a seamless loop)
+  const renderTrackContent = (trackPhotos: Photo[], startIndexOffset: number) => {
+    // If not enough photos, we still duplicate them to fill the screen width so the loop doesn't break
+    const renderList = [];
+    renderList.push(
+      trackPhotos.map((photo, i) => (
+        <div key={photo.id + '-1'} className="film-frame">
+          <img src={photo.url} alt="Guest memory" />
+          <div className="film-markings">{getMarkings(i + startIndexOffset)}</div>
+        </div>
+      ))
+    );
+    if (trackPhotos.length > 0 && trackPhotos.length < 15) {
+      renderList.push(
+        trackPhotos.map((photo, i) => (
+          <div key={photo.id + '-2'} className="film-frame">
+            <img src={photo.url} alt="Guest memory" />
+            <div className="film-markings">{getMarkings(i + startIndexOffset + 15)}</div>
+          </div>
+        ))
+      );
+      renderList.push(
+        trackPhotos.map((photo, i) => (
+          <div key={photo.id + '-3'} className="film-frame">
+            <img src={photo.url} alt="Guest memory" />
+            <div className="film-markings">{getMarkings(i + startIndexOffset + 30)}</div>
+          </div>
+        ))
+      );
+    }
+    return renderList;
+  };
+
   return (
     <div className="present-container">
       <div className="present-sidebar">
@@ -85,45 +118,13 @@ export default function PresentationWhitePage() {
       {/* Right Gallery Area - Cinematic Film Strip (2 Rows) */}
       <div className="present-gallery-wrapper">
         <div className="film-strip-track track-top">
-          {topPhotos.map((photo, i) => (
-            <div key={photo.id} className="film-frame">
-              <img src={photo.url} alt="Guest memory" />
-              <div className="film-markings">{getMarkings(i)}</div>
-            </div>
-          ))}
-          {topPhotos.length > 0 && topPhotos.length < 15 && topPhotos.map((photo, i) => (
-            <div key={`${photo.id}-dup1`} className="film-frame">
-              <img src={photo.url} alt="Guest memory" />
-              <div className="film-markings">{getMarkings(i + 15)}</div>
-            </div>
-          ))}
-          {topPhotos.length > 0 && topPhotos.length < 15 && topPhotos.map((photo, i) => (
-            <div key={`${photo.id}-dup2`} className="film-frame">
-              <img src={photo.url} alt="Guest memory" />
-              <div className="film-markings">{getMarkings(i + 30)}</div>
-            </div>
-          ))}
+          <div className="marquee-content">{renderTrackContent(topPhotos, 0)}</div>
+          <div className="marquee-content">{renderTrackContent(topPhotos, 0)}</div>
         </div>
 
         <div className="film-strip-track track-bottom">
-          {bottomPhotos.map((photo, i) => (
-            <div key={photo.id} className="film-frame">
-              <img src={photo.url} alt="Guest memory" />
-              <div className="film-markings">{getMarkings(i)}</div>
-            </div>
-          ))}
-          {bottomPhotos.length > 0 && bottomPhotos.length < 15 && bottomPhotos.map((photo, i) => (
-            <div key={`${photo.id}-dup1`} className="film-frame">
-              <img src={photo.url} alt="Guest memory" />
-              <div className="film-markings">{getMarkings(i + 15)}</div>
-            </div>
-          ))}
-          {bottomPhotos.length > 0 && bottomPhotos.length < 15 && bottomPhotos.map((photo, i) => (
-            <div key={`${photo.id}-dup2`} className="film-frame">
-              <img src={photo.url} alt="Guest memory" />
-              <div className="film-markings">{getMarkings(i + 30)}</div>
-            </div>
-          ))}
+          <div className="marquee-content">{renderTrackContent(bottomPhotos, 100)}</div>
+          <div className="marquee-content">{renderTrackContent(bottomPhotos, 100)}</div>
         </div>
       </div>
 

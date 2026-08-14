@@ -134,31 +134,36 @@
 /* Horizontal scrolling animations */
 @keyframes scrollLeft {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-100%); }
 }
 
 @keyframes scrollRight {
-  0% { transform: translateX(-50%); }
+  0% { transform: translateX(-100%); }
   100% { transform: translateX(0); }
 }
 
 .film-strip-track {
   display: flex;
   background-color: #080808; /* Dark film material */
-  padding: 40px 10px; /* Space top and bottom for sprocket holes */
+  padding: 40px 0; /* Move horizontal padding to frames or marquee */
   position: relative;
-  height: 380px; /* Reduced height to fit 2 rows */
+  height: 380px; 
   align-items: center;
-  gap: 12px; /* Thin black space between frames */
   width: max-content;
 }
 
-.track-top {
-  animation: scrollLeft 100s linear infinite; 
+.marquee-content {
+  display: flex;
+  gap: 12px;
+  padding-right: 12px; /* Ensure gap between loops */
 }
 
-.track-bottom {
-  animation: scrollRight 110s linear infinite; /* Slightly slower, opposite direction */
+.track-top .marquee-content {
+  animation: scrollLeft 120s linear infinite; 
+}
+
+.track-bottom .marquee-content {
+  animation: scrollRight 130s linear infinite;
 }
 
 /* Sprocket holes using repeating linear gradients */
@@ -169,13 +174,13 @@
   left: 0;
   right: 0;
   height: 16px;
-  /* The color here should match the background so they look like holes punched out of the film */
+  /* Increase gap between sprocket holes to reduce holes */
   background-image: repeating-linear-gradient(
     90deg,
     transparent 0px,
-    transparent 10px,
-    #0f0a07 10px,
-    #0f0a07 20px
+    transparent 16px,
+    #0f0a07 16px,
+    #0f0a07 40px
   );
   z-index: 2;
 }
