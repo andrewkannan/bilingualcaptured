@@ -13,7 +13,7 @@ interface Photo {
 
 export default function PresentationWhitePage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [spotlightPhoto, setSpotlightPhoto] = useState<Photo | null>(null);
+  const [flash, setFlash] = useState(false);
   const [origin, setOrigin] = useState('https://bilingualcaptured.vercel.app'); 
   const lastPhotoId = useRef<string | null>(null);
 
@@ -29,14 +29,11 @@ export default function PresentationWhitePage() {
         const data: Photo[] = await res.json();
         
         if (data.length > 0) {
-          // Check for new photo to spotlight
+          // Check for new photo to trigger flash
           const latestPhoto = data[0];
-          // Only trigger spotlight if we already had a lastPhotoId (meaning this isn't the initial load)
           if (lastPhotoId.current && lastPhotoId.current !== latestPhoto.id) {
-            setSpotlightPhoto(latestPhoto);
-            setTimeout(() => {
-              setSpotlightPhoto(null);
-            }, 6000); // Hide after animation finishes
+            setFlash(true);
+            setTimeout(() => setFlash(false), 1000); // Reset flash state after animation
           }
           lastPhotoId.current = latestPhoto.id;
         }
@@ -77,36 +74,35 @@ export default function PresentationWhitePage() {
         </div>
       </div>
 
-      {/* Right Gallery Area - Photo Collage */}
+      {/* Right Gallery Area - Cinematic Film Strip */}
       <div className="present-gallery-wrapper">
-        <div className="gallery-scroller">
+        <div className="film-strip-track">
           {photos.map(photo => (
-            <div key={photo.id} className="present-photo-card animate-fade-in-up">
+            <div key={photo.id} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
             </div>
           ))}
-          {/* Render a few more times for a dense collage look if there are very few photos */}
-          {photos.length > 0 && photos.length < 15 && photos.map(photo => (
-            <div key={`${photo.id}-dup1`} className="present-photo-card animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          {/* Render extra duplicates to make the film strip long enough to loop */}
+          {photos.length > 0 && photos.length < 20 && photos.map(photo => (
+            <div key={`${photo.id}-dup1`} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
             </div>
           ))}
-          {photos.length > 0 && photos.length < 8 && photos.map(photo => (
-            <div key={`${photo.id}-dup2`} className="present-photo-card animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          {photos.length > 0 && photos.length < 20 && photos.map(photo => (
+            <div key={`${photo.id}-dup2`} className="film-frame">
+              <img src={photo.url} alt="Guest memory" />
+            </div>
+          ))}
+          {photos.length > 0 && photos.length < 20 && photos.map(photo => (
+            <div key={`${photo.id}-dup3`} className="film-frame">
               <img src={photo.url} alt="Guest memory" />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Spotlight Widget (Small pinned corner widget) */}
-      {spotlightPhoto && (
-        <div className="spotlight-widget">
-          <div className="new-badge">NEW!</div>
-          <img src={spotlightPhoto.url} alt="New memory" />
-          <div className="caption">Just Captured!</div>
-        </div>
-      )}
+      {/* Camera Flash Effect */}
+      <div className={`flash-overlay ${flash ? 'flash-active' : ''}`}></div>
     </div>
   );
 }

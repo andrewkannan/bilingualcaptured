@@ -120,67 +120,95 @@
   animation: pulseLive 2s infinite;
 }
 
-/* Right Panel - Photo Collage */
+/* Right Panel - Cinematic Film Strip */
 .present-gallery-wrapper {
   flex: 1;
   position: relative;
   overflow: hidden;
-  padding: 2rem;
-}
-
-/* Floating animation for the collage background */
-@keyframes drift {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-50%) rotate(0deg); }
-}
-
-.gallery-scroller {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: flex-start;
-  gap: 1.5rem;
-  padding: 2rem;
-  height: max-content;
-  animation: drift 120s linear infinite; /* Very slow drift */
+  align-items: center; /* Center the film strip vertically */
+  padding: 0; /* Remove padding to let film strip go edge to edge */
 }
 
-/* Scattered Collage Styling */
-.present-photo-card {
-  background: #F4EFE6;
-  padding: 12px 12px 50px 12px;
-  border-radius: 2px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+/* Horizontal scrolling animation */
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.film-strip-track {
+  display: flex;
+  background-color: #080808; /* Dark film material */
+  padding: 40px 10px; /* Space top and bottom for sprocket holes */
   position: relative;
-  width: 260px; /* Fixed smaller width for more photos per line */
-  transition: transform 0.3s ease;
+  height: 480px; /* Height of the film strip */
+  align-items: center;
+  gap: 12px; /* Thin black space between frames */
+  animation: scrollLeft 90s linear infinite; /* Slow horizontal pan */
+  width: max-content;
+}
+
+/* Sprocket holes using repeating linear gradients */
+.film-strip-track::before,
+.film-strip-track::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16px;
+  /* The color here should match the background so they look like holes punched out of the film */
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 10px,
+    #0f0a07 10px,
+    #0f0a07 20px
+  );
+  z-index: 2;
+}
+
+.film-strip-track::before { top: 12px; }
+.film-strip-track::after { bottom: 12px; }
+
+/* Individual Film Frames */
+.film-frame {
+  height: 100%;
+  aspect-ratio: 4 / 3; /* Standard cinematic ratio */
+  background: #000;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 2px;
 }
 
-/* Alternating rotations for collage effect */
-.present-photo-card:nth-child(5n+1) { transform: rotate(-6deg) translateY(10px); }
-.present-photo-card:nth-child(5n+2) { transform: rotate(4deg) translateY(-15px); }
-.present-photo-card:nth-child(5n+3) { transform: rotate(-2deg) translateY(5px); }
-.present-photo-card:nth-child(5n+4) { transform: rotate(7deg) translateY(-5px); }
-.present-photo-card:nth-child(5n+5) { transform: rotate(-4deg) translateY(20px); }
-
-.present-photo-card img {
+.film-frame img {
   width: 100%;
-  height: auto;
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-  filter: sepia(30%) contrast(1.1) brightness(0.9) saturate(0.85);
+  height: 100%;
+  object-fit: cover;
+  /* Cinematic color grading: slightly desaturated, higher contrast, subtle warmth */
+  filter: grayscale(15%) sepia(15%) contrast(1.15) brightness(0.9);
 }
 
-/* Cinematic Fade In for new photos */
-@keyframes fadeInUpScale {
-  0% { opacity: 0; transform: translateY(30px) scale(0.9); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+/* Camera Flash Effect for Spotlight */
+@keyframes cameraFlash {
+  0% { opacity: 0; background-color: #fff; }
+  10% { opacity: 1; }
+  20% { opacity: 0.5; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUpScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  opacity: 0; /* Starts hidden, animation makes it visible */
+.flash-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #fff;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.flash-active {
+  animation: cameraFlash 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Latest Memory Spotlight (Small Widget) */
