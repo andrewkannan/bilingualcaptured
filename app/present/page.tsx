@@ -13,6 +13,7 @@ interface Photo {
 
 export default function PresentationPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [activeUsers, setActiveUsers] = useState(0);
   const [flash, setFlash] = useState(false);
   const [origin, setOrigin] = useState('https://bilingualcaptured.vercel.app'); 
   const lastPhotoId = useRef<string | null>(null);
@@ -25,22 +26,26 @@ export default function PresentationPage() {
     const fetchPhotos = async () => {
       try {
         const res = await fetch('/api/photos');
-        if (!res.ok) return;
-        const data: Photo[] = await res.json();
-        
-        if (data.length > 0) {
-          // Check for new photo to trigger flash
-          const latestPhoto = data[0];
-          if (lastPhotoId.current && lastPhotoId.current !== latestPhoto.id) {
-            setFlash(true);
-            setTimeout(() => setFlash(false), 1000); // Reset flash state after animation
+        if (res.ok) {
+          const data: Photo[] = await res.json();
+          if (data.length > 0) {
+            const latestPhoto = data[0];
+            if (lastPhotoId.current && lastPhotoId.current !== latestPhoto.id) {
+              setFlash(true);
+              setTimeout(() => setFlash(false), 1000); 
+            }
+            lastPhotoId.current = latestPhoto.id;
           }
-          lastPhotoId.current = latestPhoto.id;
+          setPhotos(data);
         }
-        
-        setPhotos(data);
+
+        const resUsers = await fetch('/api/heartbeat');
+        if (resUsers.ok) {
+          const userData = await resUsers.json();
+          setActiveUsers(userData.count);
+        }
       } catch (err) {
-        console.error('Error fetching photos:', err);
+        console.error('Error fetching data:', err);
       }
     };
 
@@ -79,11 +84,20 @@ export default function PresentationPage() {
           <div className="qr-text">Scan to Take a Photo!</div>
         </div>
 
-        <div className="stats-section">
-          <div className="photo-count">{photos.length}</div>
-          <div className="photo-count-label">
-            <span className="live-indicator"></span>
-            Photos Captured
+        <div className="stats-section" style={{ display: 'flex', gap: '2rem' }}>
+          <div>
+            <div className="photo-count">{photos.length}</div>
+            <div className="photo-count-label">
+              <span className="live-indicator"></span>
+              Photos Captured
+            </div>
+          </div>
+          <div>
+            <div className="photo-count">{activeUsers}</div>
+            <div className="photo-count-label">
+              <span className="live-indicator" style={{ background: '#00ff88', boxShadow: '0 0 8px #00ff88' }}></span>
+              Active Cameras
+            </div>
           </div>
         </div>
       </div>

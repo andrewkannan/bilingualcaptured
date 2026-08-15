@@ -76,6 +76,27 @@ export default function Camera({ onViewGallery, lastPhoto, setLastPhoto, theme, 
     };
   }, [facingMode]);
 
+  // Heartbeat to track active cameras
+  useEffect(() => {
+    let sid = sessionStorage.getItem('cam_session_id');
+    if (!sid) {
+      sid = Math.random().toString(36).substring(2, 15);
+      sessionStorage.setItem('cam_session_id', sid);
+    }
+    
+    const ping = () => {
+      fetch('/api/heartbeat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: sid })
+      }).catch(() => {});
+    };
+    
+    ping();
+    const interval = setInterval(ping, 5000); // Ping every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   const toggleCamera = () => setFacingMode(prev => prev === 'environment' ? 'user' : 'environment');
   const toggleFilter = () => setFilterIndex(prev => (prev + 1) % FILTERS.length);
   const toggleTimer = () => setTimerIndex(prev => (prev + 1) % TIMERS.length);
