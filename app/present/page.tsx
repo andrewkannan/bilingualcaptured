@@ -14,7 +14,6 @@ interface Photo {
 export default function PresentationPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [activeUsers, setActiveUsers] = useState(0);
-  const [flash, setFlash] = useState(false);
   const [origin, setOrigin] = useState('https://bilingualcaptured.vercel.app'); 
   const lastPhotoId = useRef<string | null>(null);
 
@@ -30,10 +29,6 @@ export default function PresentationPage() {
           const data: Photo[] = await res.json();
           if (data.length > 0) {
             const latestPhoto = data[0];
-            if (lastPhotoId.current && lastPhotoId.current !== latestPhoto.id) {
-              setFlash(true);
-              setTimeout(() => setFlash(false), 1000); 
-            }
             lastPhotoId.current = latestPhoto.id;
           }
           setPhotos(data);
@@ -112,9 +107,6 @@ export default function PresentationPage() {
           ))}
         </div>
       </div>
-
-      {/* Camera Flash Effect */}
-      <div className={`flash-overlay ${flash ? 'flash-active' : ''}`}></div>
     </div>
   );
 }
