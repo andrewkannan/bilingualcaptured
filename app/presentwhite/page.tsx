@@ -67,7 +67,7 @@ export default function PresentationWhitePage() {
       <div className="present-sidebar">
         <div className="brand-section">
           <h1>CCC JB Bilingual</h1>
-          <p>Scan the QR code to capture and share your moments live on the big screen!</p>
+          <p>Scan the QR code to be today's photographer and share your moments live with our church family!</p>
         </div>
 
         <div className="qr-section">
