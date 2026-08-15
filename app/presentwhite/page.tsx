@@ -52,44 +52,15 @@ export default function PresentationWhitePage() {
   // Split photos for two tracks
   const topPhotos = photos.filter((_, i) => i % 2 === 0);
   const bottomPhotos = photos.filter((_, i) => i % 2 !== 0);
-
   // Helper to generate markings
   const getMarkings = (index: number) => {
     return `KODAK 400   ${(index % 12) + 1} A   ${new Date().toISOString().split('T')[0]}   CCC JB BILINGUAL`;
   };
 
-  // Helper to render track contents (we render it twice per track for a seamless loop)
-  const renderTrackContent = (trackPhotos: Photo[], startIndexOffset: number) => {
-    // If not enough photos, we still duplicate them to fill the screen width so the loop doesn't break
-    const renderList = [];
-    renderList.push(
-      trackPhotos.map((photo, i) => (
-        <div key={photo.id + '-1'} className="film-frame">
-          <img src={photo.url} alt="Guest memory" />
-          <div className="film-markings">{getMarkings(i + startIndexOffset)}</div>
-        </div>
-      ))
-    );
-    if (trackPhotos.length > 0 && trackPhotos.length < 15) {
-      renderList.push(
-        trackPhotos.map((photo, i) => (
-          <div key={photo.id + '-2'} className="film-frame">
-            <img src={photo.url} alt="Guest memory" />
-            <div className="film-markings">{getMarkings(i + startIndexOffset + 15)}</div>
-          </div>
-        ))
-      );
-      renderList.push(
-        trackPhotos.map((photo, i) => (
-          <div key={photo.id + '-3'} className="film-frame">
-            <img src={photo.url} alt="Guest memory" />
-            <div className="film-markings">{getMarkings(i + startIndexOffset + 30)}</div>
-          </div>
-        ))
-      );
-    }
-    return renderList;
-  };
+  // Calculate columns dynamically to auto-shrink photos based on count
+  const numPhotos = photos.length || 1;
+  // Dynamic formula to fit photos perfectly on a 16:9 screen
+  const columns = Math.ceil(Math.sqrt(numPhotos * 1.3));
 
   return (
     <div className="present-container">
@@ -115,16 +86,14 @@ export default function PresentationWhitePage() {
         </div>
       </div>
 
-      {/* Right Gallery Area - Cinematic Film Strip (2 Rows) */}
+      {/* Right Gallery Area - Pin Board */}
       <div className="present-gallery-wrapper">
-        <div className="film-strip-track track-top">
-          <div className="marquee-content">{renderTrackContent(topPhotos, 0)}</div>
-          <div className="marquee-content">{renderTrackContent(topPhotos, 0)}</div>
-        </div>
-
-        <div className="film-strip-track track-bottom">
-          <div className="marquee-content">{renderTrackContent(bottomPhotos, 100)}</div>
-          <div className="marquee-content">{renderTrackContent(bottomPhotos, 100)}</div>
+        <div className="pin-board-grid" style={{ '--cols': columns } as React.CSSProperties}>
+          {photos.map(photo => (
+            <div key={photo.id} className="pin-photo animate-fade-in-up">
+              <img src={photo.url} alt="Guest memory" />
+            </div>
+          ))}
         </div>
       </div>
 
