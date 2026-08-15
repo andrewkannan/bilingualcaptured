@@ -69,7 +69,7 @@ export default function PresentationPage() {
       <div className="present-sidebar">
         <div className="brand-section">
           <h1>CCC JB Bilingual</h1>
-          <p>Scan the QR code to be today's photographer and share your moments live with our church family!</p>
+          <p>Scan the QR code to be today's photographer and share your best moment with us</p>
         </div>
 
         <div className="qr-section">
