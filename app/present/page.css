@@ -143,8 +143,9 @@
   /* Dynamically calculated width so they always fit on screen */
   width: calc((100% / var(--cols, 4)) - 1%);
   background: #FFF;
-  padding: 1.5%; 
-  padding-bottom: 5%; /* Polaroid white bottom border */
+  /* Scale padding by dividing by cols so it's relative to the cell, not the massive parent wrapper */
+  padding: calc(3% / var(--cols, 4)); 
+  padding-bottom: calc(12% / var(--cols, 4)); 
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
   position: relative;
   aspect-ratio: 4 / 5; /* Classic polaroid shape */
