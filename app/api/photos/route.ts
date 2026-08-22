@@ -34,8 +34,13 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { id } = await request.json();
+    const { id, deleteAll } = await request.json();
     
+    if (deleteAll) {
+      await prisma.photo.deleteMany({});
+      return NextResponse.json({ success: true, message: 'All photos deleted' });
+    }
+
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
@@ -46,7 +51,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting photo:', error);
-    return NextResponse.json({ error: 'Failed to delete photo' }, { status: 500 });
+    console.error('Error deleting photo(s):', error);
+    return NextResponse.json({ error: 'Failed to delete photo(s)' }, { status: 500 });
   }
 }

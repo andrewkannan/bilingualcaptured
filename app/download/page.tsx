@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { Download, Loader2, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+import { Download, Loader2, CheckCircle2, Image as ImageIcon, Trash2 } from 'lucide-react';
 
 interface Photo {
   id: string;
@@ -15,6 +15,7 @@ export default function DownloadPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState('');
   const [success, setSuccess] = useState(false);
@@ -86,6 +87,39 @@ export default function DownloadPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (photos.length === 0) return;
+    
+    if (!window.confirm('Are you absolutely sure you want to delete ALL photos from the event? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(true);
+    setStatusText('Deleting all photos...');
+    
+    try {
+      const res = await fetch('/api/photos', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deleteAll: true })
+      });
+      
+      if (res.ok) {
+        setPhotos([]);
+        setSuccess(true);
+        setStatusText('All photos have been permanently deleted.');
+      } else {
+        throw new Error('Failed to delete photos');
+      }
+    } catch (err) {
+      console.error('Error deleting photos:', err);
+      alert('Error deleting photos. Please try again.');
+      setStatusText('');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -124,7 +158,7 @@ export default function DownloadPage() {
           Event Gallery Archive
         </h1>
         <p style={{ color: '#6b7280', marginBottom: '2.5rem' }}>
-          Download all photos captured by guests during the event in a single ZIP file.
+          Download all photos captured by guests during the event in a single ZIP file, or manage the gallery.
         </p>
 
         {loading ? (
@@ -182,17 +216,17 @@ export default function DownloadPage() {
 
             <button
               onClick={handleDownloadAll}
-              disabled={downloading || photos.length === 0}
+              disabled={downloading || deleting || photos.length === 0}
               style={{
                 width: '100%',
                 padding: '1rem',
-                backgroundColor: downloading || photos.length === 0 ? '#9ca3af' : '#111',
+                backgroundColor: downloading || deleting || photos.length === 0 ? '#9ca3af' : '#111',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                cursor: downloading || photos.length === 0 ? 'not-allowed' : 'pointer',
+                cursor: downloading || deleting || photos.length === 0 ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -207,6 +241,36 @@ export default function DownloadPage() {
               )}
               {downloading ? 'Processing...' : 'Download All as ZIP'}
             </button>
+            
+            <button
+              onClick={handleDeleteAll}
+              disabled={downloading || deleting || photos.length === 0}
+              style={{
+                width: '100%',
+                padding: '1rem',
+                backgroundColor: 'transparent',
+                color: downloading || deleting || photos.length === 0 ? '#fca5a5' : '#ef4444',
+                border: `1px solid ${downloading || deleting || photos.length === 0 ? '#fca5a5' : '#ef4444'}`,
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: downloading || deleting || photos.length === 0 ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                marginTop: '1rem',
+                transition: 'all 0.2s'
+              }}
+            >
+              {deleting ? (
+                <Loader2 className="animate-spin" size={20} style={{ animation: 'spin 1s linear infinite' }} />
+              ) : (
+                <Trash2 size={20} />
+              )}
+              {deleting ? 'Deleting...' : 'Delete All Photos'}
+            </button>
+            
             <style>{`
               @keyframes spin {
                 from { transform: rotate(0deg); }
